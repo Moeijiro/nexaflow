@@ -44,5 +44,5 @@ class StatsOut(BaseModel):
     succeeded: int
     failed: int
     success_rate: float | None
-    avg_duration_ms: int | None
+    avg_duration_ms: float | None
     series: list[dict]

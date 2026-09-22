@@ -20,7 +20,12 @@ from app.core.errors import APIError
 from app.core.security import generate_signing_secret, generate_workflow_token
 from app.db.session import get_db
 from app.models import Execution, User, Workflow
-from app.schemas.execution import ExecutionPage, ExecutionWithWorkflow, TriggerAccepted
+from app.schemas.execution import (
+    ExecutionOut,
+    ExecutionPage,
+    ExecutionWithWorkflow,
+    TriggerAccepted,
+)
 from app.schemas.workflow import (
     TestRunRequest,
     WorkflowCreate,
@@ -239,9 +244,7 @@ def workflow_executions(
     return ExecutionPage(
         items=[
             ExecutionWithWorkflow(
-                **ExecutionWithWorkflow.model_validate(item).model_dump(
-                    exclude={"workflow_name", "action_type"}
-                ),
+                **ExecutionOut.model_validate(item).model_dump(),
                 workflow_name=workflow.name,
                 action_type=workflow.action_type,
             )

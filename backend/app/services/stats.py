@@ -41,8 +41,8 @@ def overview(db: Session, user_id: int) -> dict[str, Any]:
     total = count()
     succeeded = count(Execution.status == ExecutionStatus.SUCCESS.value)
     failed = count(Execution.status == ExecutionStatus.FAILED.value)
-    avg_ms = db.execute(
-        select(func.avg(Execution.duration_ms)).where(Execution.user_id == user_id)
+    avg_us = db.execute(
+        select(func.avg(Execution.duration_us)).where(Execution.user_id == user_id)
     ).scalar_one()
 
     bucket = _hour_bucket(db)
@@ -83,6 +83,6 @@ def overview(db: Session, user_id: int) -> dict[str, Any]:
         "succeeded": succeeded,
         "failed": failed,
         "success_rate": round(succeeded / total * 100, 1) if total else None,
-        "avg_duration_ms": int(avg_ms) if avg_ms is not None else None,
+        "avg_duration_ms": round(avg_us / 1000, 2) if avg_us is not None else None,
         "series": series,
     }

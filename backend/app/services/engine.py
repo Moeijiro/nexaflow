@@ -108,7 +108,7 @@ async def run_execution(execution_id: int) -> None:
         result = outcome.as_result()
         result["attempts"] = execution.attempts
         execution.action_result = result
-        execution.duration_ms = int((time.perf_counter() - started) * 1000)
+        execution.duration_us = int((time.perf_counter() - started) * 1_000_000)
         _finish(
             db,
             execution,

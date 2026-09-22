@@ -44,7 +44,9 @@ class Execution(Base):
         DateTime(timezone=True), default=utcnow, index=True
     )
     finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), default=None)
-    duration_ms: Mapped[int | None] = mapped_column(Integer, default=None)
+    # Microseconds: an action against a fast endpoint finishes in well under a
+    # millisecond, and rounding those to an integer ms reports every run as 0.
+    duration_us: Mapped[int | None] = mapped_column(Integer, default=None)
 
     trigger_payload: Mapped[dict[str, Any] | None] = mapped_column(JSON, default=None)
     # What the transform step produced, when the workflow has one.
