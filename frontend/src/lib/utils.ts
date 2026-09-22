@@ -47,3 +47,43 @@ export const ACTION_LABELS: Record<string, string> = {
   telegram: "Telegram",
   http: "HTTP request",
 };
+
+/**
+ * Build a sample payload from the placeholders a workflow actually uses.
+ *
+ * A generic `{ "order_id": 1024 }` does not fit a workflow whose transform
+ * reads `{{order.id}}`, so the Test button prefills a payload shaped like the
+ * templates themselves. Numeric-sounding leaves get numbers so JSON templates
+ * that interpolate bare values stay valid.
+ */
+const PLACEHOLDER_RE = /\{\{\s*([A-Za-z0-9_.\-[\]]+)\s*\}\}/g;
+const NUMERIC_HINTS = ["amount", "total", "count", "price", "qty", "quantity", "id_number"];
+
+export function samplePayloadFromTemplates(templates: (string | null | undefined)[]) {
+  const paths = new Set<string>();
+  for (const template of templates) {
+    if (!template) continue;
+    for (const match of template.matchAll(PLACEHOLDER_RE)) paths.add(match[1]);
+  }
+  if (paths.size === 0) return { order_id: 1024, customer: "Alex", amount: 49.99 };
+
+  const payload: Record<string, unknown> = {};
+  for (const path of paths) {
+    const parts = path.replace(/\[(\d+)\]/g, ".$1").split(".").filter(Boolean);
+    let cursor: Record<string, unknown> = payload;
+    parts.forEach((part, index) => {
+      if (index === parts.length - 1) {
+        const leaf = part.toLowerCase();
+        cursor[part] = NUMERIC_HINTS.some((hint) => leaf.includes(hint))
+          ? 49.99
+          : leaf.endsWith("id")
+            ? "A-1042"
+            : `sample ${part}`;
+        return;
+      }
+      if (typeof cursor[part] !== "object" || cursor[part] === null) cursor[part] = {};
+      cursor = cursor[part] as Record<string, unknown>;
+    });
+  }
+  return payload;
+}

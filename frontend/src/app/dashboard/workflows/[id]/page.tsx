@@ -14,7 +14,8 @@ import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { CodeBlock } from "@/components/ui/code-block";
 import { ErrorNote, Spinner } from "@/components/ui/feedback";
 import { Toggle } from "@/components/ui/field";
-import { ACTION_LABELS, absoluteTime } from "@/lib/utils";
+import { Textarea } from "@/components/ui/field";
+import { ACTION_LABELS, absoluteTime, samplePayloadFromTemplates } from "@/lib/utils";
 
 export default function WorkflowDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -28,6 +29,8 @@ export default function WorkflowDetailPage({ params }: { params: Promise<{ id: s
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [testOpen, setTestOpen] = useState(false);
+  const [testPayload, setTestPayload] = useState<string | null>(null);
 
   if (workflow.loading) return <Spinner label="Loading workflow" />;
   if (workflow.error) return <ErrorNote message={workflow.error} />;
@@ -48,16 +51,37 @@ export default function WorkflowDetailPage({ params }: { params: Promise<{ id: s
     }
   };
 
+  const openTest = () => {
+    if (testPayload === null) {
+      // Prefilled from the placeholders the *first* stage reads. With a
+      // transform that is the transform's paths; without one the action reads
+      // the incoming payload directly. Mixing both would produce a sample that
+      // fits neither.
+      const sample = samplePayloadFromTemplates(
+        detail.transform_template
+          ? [detail.transform_template]
+          : [
+              String(detail.action_config.message_template ?? ""),
+              String(detail.action_config.body_template ?? ""),
+            ],
+      );
+      setTestPayload(JSON.stringify(sample, null, 2));
+    }
+    setTestOpen((value) => !value);
+  };
+
   const runTest = async () => {
     setBusy(true);
     setError(null);
     setNotice(null);
     try {
-      const result = await api.testWorkflow(workflowId, {
-        order_id: 1024,
-        customer: "Alex",
-        amount: 49.99,
-      });
+      let payload: Record<string, unknown>;
+      try {
+        payload = JSON.parse(testPayload ?? "{}");
+      } catch {
+        throw new Error("The test payload is not valid JSON.");
+      }
+      const result = await api.testWorkflow(workflowId, payload);
       setNotice(`Test run queued as execution #${result.execution_id}.`);
       // The action runs in the background; give it a moment before reloading.
       setTimeout(() => {
@@ -91,7 +115,7 @@ export default function WorkflowDetailPage({ params }: { params: Promise<{ id: s
         back={{ href: "/dashboard/workflows", label: "Workflows" }}
         actions={
           <>
-            <Button size="sm" onClick={runTest} loading={busy}>
+            <Button size="sm" onClick={openTest} aria-expanded={testOpen}>
               <Play className="h-3.5 w-3.5" aria-hidden />
               Test
             </Button>
@@ -123,6 +147,35 @@ export default function WorkflowDetailPage({ params }: { params: Promise<{ id: s
           />
           <CardBody>
             <CodeBlock value={detail.signing_secret} />
+          </CardBody>
+        </Card>
+      ) : null}
+
+      {testOpen ? (
+        <Card className="mb-4">
+          <CardHeader
+            title="Test run"
+            description="This calls the real destination and is recorded like any other execution — marked as a test."
+            icon={<Play className="h-4 w-4" aria-hidden />}
+          />
+          <CardBody className="space-y-3">
+            <Textarea
+              aria-label="Test payload"
+              rows={7}
+              value={testPayload ?? ""}
+              onChange={(event) => setTestPayload(event.target.value)}
+            />
+            <div className="flex items-center gap-2">
+              <Button variant="primary" size="sm" onClick={runTest} loading={busy}>
+                Run test
+              </Button>
+              <Button variant="ghost" size="sm" onClick={() => setTestOpen(false)}>
+                Cancel
+              </Button>
+              <span className="text-[11px] text-[var(--color-ink-subtle)]">
+                Prefilled from the placeholders this workflow reads.
+              </span>
+            </div>
           </CardBody>
         </Card>
       ) : null}
