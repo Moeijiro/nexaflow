@@ -1,26 +1,121 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ---------------------------------------------------------------------------
+   NexaFlow design tokens.
+
+   One near-black surface ramp, one violet accent, one supporting cyan, and
+   three status colours. Everything in the product is built from these — there
+   are no one-off hex values in components.
+   ------------------------------------------------------------------------ */
+@theme {
+  --color-canvas: #07070b;
+  --color-surface: #0c0d13;
+  --color-surface-raised: #12131c;
+  --color-border: #1c1e2b;
+  --color-border-strong: #2a2d3e;
+
+  --color-ink: #eceef5;
+  --color-ink-muted: #9ba0b4;
+  --color-ink-subtle: #666b80;
+
+  --color-accent: #7b6cff;
+  --color-accent-soft: #211f45;
+  --color-cyan: #3ec9e0;
+  --color-positive: #3fcf8e;
+  --color-warning: #e4a950;
+  --color-danger: #f0616d;
+
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, "SF Mono", Menlo, monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: rgba(123, 108, 255, 0.3);
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-border-strong);
+    border-radius: 999px;
+  }
+
+  /* Visible focus for keyboard users, invisible for mouse users. */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Respect the system setting: no motion means no motion. */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  /* The faint blueprint grid behind hero and section backdrops. */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+
+  .bg-grid-fade {
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 40%, transparent 100%);
+  }
+
+  /* A single soft glow, used sparingly: hero, CTA, pricing highlight. */
+  .glow-accent {
+    background: radial-gradient(
+      ellipse 50% 45% at 50% 0%,
+      rgba(123, 108, 255, 0.22),
+      transparent 70%
+    );
+  }
+
+  .text-gradient {
+    background: linear-gradient(180deg, var(--color-ink) 30%, rgba(236, 238, 245, 0.55));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Hairline border that brightens on hover — used by every interactive card. */
+  .card-hover {
+    transition: border-color 200ms ease, background-color 200ms ease, transform 200ms ease;
+  }
+  .card-hover:hover {
+    border-color: var(--color-border-strong);
+    background-color: color-mix(in oklab, var(--color-surface) 92%, white 8%);
+  }
 }

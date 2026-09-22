@@ -1,69 +1,118 @@
-import Image from "next/image";
+import Link from "next/link";
+import { Navbar } from "@/components/site/navbar";
+import { Footer } from "@/components/site/footer";
+import { Hero } from "@/components/site/hero";
+import { FeatureGrid } from "@/components/site/feature-grid";
+import { UseCases } from "@/components/site/use-cases";
+import { ApiDemo } from "@/components/site/api-demo";
+import { DashboardPreview } from "@/components/site/dashboard-preview";
+import { HowItWorks } from "@/components/site/how-it-works";
+import { IntegrationGrid } from "@/components/site/integration-grid";
+import { PricingTable } from "@/components/site/pricing-table";
+import { Faq } from "@/components/site/faq";
+import { Cta } from "@/components/site/cta";
+import { Reveal, Section, SectionHeading } from "@/components/site/section";
+import { Button } from "@/components/ui/button";
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+    <>
+      <Navbar />
+      <main id="main">
+        <Hero />
+
+        <Section id="integrations">
+          <SectionHeading
+            eyebrow="Integrations"
+            title="Three destinations that actually work"
+            description="Discord, Telegram and any HTTP API. Each one is an adapter with its own validated configuration — adding the next is a single module."
+          />
+          <div className="mt-10">
+            <IntegrationGrid showPlanned={false} />
+          </div>
+          <Reveal className="mt-6 text-center">
+            <Link href="/integrations">
+              <Button variant="ghost" size="sm">
+                See what else is planned
+              </Button>
+            </Link>
+          </Reveal>
+        </Section>
+
+        <Section id="features">
+          <SectionHeading
+            eyebrow="Features"
+            title="Everything a small automation needs, nothing it does not"
+            description="No drag-and-drop canvas, no 200 half-finished connectors. One trigger, one optional transform, one action — built properly."
+          />
+          <div className="mt-10">
+            <FeatureGrid />
+          </div>
+        </Section>
+
+        <Section id="use-cases">
+          <SectionHeading
+            eyebrow="Use cases"
+            title="Three automations you could ship today"
+            description="Each one is the same pipeline with different ends: a webhook in, a transform in the middle, an action out."
+          />
+          <div className="mt-10">
+            <UseCases />
+          </div>
+        </Section>
+
+        <Section id="api">
+          <SectionHeading
+            eyebrow="Developer API"
+            title="A webhook call, start to finish"
+            description="POST a payload, get an execution id back immediately, and let the workflow run in the background."
+          />
+          <div className="mt-10">
+            <ApiDemo />
+          </div>
+        </Section>
+
+        <Section id="dashboard">
+          <SectionHeading
+            eyebrow="Dashboard"
+            title="See what ran, and what it answered"
+            description="Executions are stored with the payload at every stage — so a failed automation is a question you can answer, not a mystery."
+          />
+          <Reveal className="mt-10">
+            <DashboardPreview />
+          </Reveal>
+        </Section>
+
+        <Section id="how-it-works">
+          <SectionHeading eyebrow="How it works" title="Three steps, then it runs itself" />
+          <div className="mt-10">
+            <HowItWorks />
+          </div>
+        </Section>
+
+        <Section id="pricing">
+          <SectionHeading
+            eyebrow="Pricing"
+            title="Plans, illustratively"
+            description="NexaFlow is a portfolio project: the plans below show how the product would be packaged, but nothing is charged and no billing code exists."
+          />
+          <div className="mt-10">
+            <PricingTable />
+          </div>
+        </Section>
+
+        <Section id="faq">
+          <SectionHeading eyebrow="FAQ" title="Questions worth answering up front" />
+          <div className="mt-8">
+            <Faq />
+          </div>
+        </Section>
+
+        <Section className="border-t-0">
+          <Cta />
+        </Section>
       </main>
-    </div>
+      <Footer />
+    </>
   );
 }
