@@ -13,8 +13,8 @@ import { absoluteTime } from "@/lib/utils";
 
 export default function SettingsPage() {
   const router = useRouter();
-  const user = useAsync(() => api.me(), []);
-  const stats = useAsync(() => api.stats(), []);
+  const user = useAsync(() => api.me());
+  const stats = useAsync(() => api.stats());
 
   if (user.loading) return <Spinner label="Loading account" />;
 

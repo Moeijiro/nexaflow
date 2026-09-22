@@ -15,7 +15,7 @@ import { absoluteTime, relativeTime } from "@/lib/utils";
 import type { CreatedApiKey } from "@/lib/types";
 
 export default function ApiKeysPage() {
-  const { data, error, loading, reload } = useAsync(() => api.keys(), []);
+  const { data, error, loading, reload } = useAsync(() => api.keys());
   const [name, setName] = useState("");
   const [created, setCreated] = useState<CreatedApiKey | null>(null);
   const [busy, setBusy] = useState(false);

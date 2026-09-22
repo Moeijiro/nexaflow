@@ -12,7 +12,7 @@ import { EmptyState, ErrorNote, Spinner } from "@/components/ui/feedback";
 import { ACTION_LABELS, relativeTime } from "@/lib/utils";
 
 export default function WorkflowsPage() {
-  const { data, error, loading } = useAsync(() => api.workflows(), []);
+  const { data, error, loading } = useAsync(() => api.workflows());
 
   return (
     <>

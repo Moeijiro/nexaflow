@@ -15,7 +15,7 @@ const ICONS: Record<string, typeof Plug> = {
 };
 
 export default function IntegrationsPage() {
-  const { data, error, loading } = useAsync(() => api.integrations(), []);
+  const { data, error, loading } = useAsync(() => api.integrations());
 
   return (
     <>

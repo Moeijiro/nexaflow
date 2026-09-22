@@ -15,7 +15,7 @@ import { ACTION_LABELS, absoluteTime, duration } from "@/lib/utils";
  *  made of it, what the action sent, and what came back. */
 export default function ExecutionDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const execution = useAsync(() => api.execution(Number(id)), [id]);
+  const execution = useAsync(() => api.execution(Number(id)), `execution:${id}`);
 
   if (execution.loading) return <Spinner label="Loading execution" />;
   if (execution.error) return <ErrorNote message={execution.error} />;

@@ -19,7 +19,7 @@ function ExecutionsView() {
   const [status, setStatus] = useState("");
   const [offset, setOffset] = useState(0);
 
-  const workflows = useAsync(() => api.workflows(), []);
+  const workflows = useAsync(() => api.workflows());
   const page = useAsync(
     () =>
       api.executions({
@@ -28,7 +28,7 @@ function ExecutionsView() {
         status: status || undefined,
         workflow_id: workflowFilter ? Number(workflowFilter) : undefined,
       }),
-    [offset, status, workflowFilter],
+    `executions:${offset}:${status}:${workflowFilter}`,
   );
 
   const total = page.data?.total ?? 0;

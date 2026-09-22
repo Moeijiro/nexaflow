@@ -40,6 +40,8 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
+    // Resolving the session is exactly the "synchronise with an external
+    // system" case effects exist for; the state lands in the promise callback.
     let cancelled = false;
     api
       .me()
@@ -52,8 +54,6 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
       cancelled = true;
     };
   }, [router]);
-
-  useEffect(() => setOpen(false), [pathname]);
 
   if (loading) return <Spinner label="Checking session" />;
   if (!user) return null;
@@ -101,6 +101,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                   <li key={item.href}>
                     <Link
                       href={item.href}
+                      onClick={() => setOpen(false)}
                       aria-current={active ? "page" : undefined}
                       className={cn(
                         "flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors",

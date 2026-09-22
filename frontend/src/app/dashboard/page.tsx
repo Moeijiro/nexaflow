@@ -15,9 +15,9 @@ import { StatusDot } from "@/components/ui/badge";
 import { ACTION_LABELS, relativeTime } from "@/lib/utils";
 
 export default function OverviewPage() {
-  const stats = useAsync(() => api.stats(), []);
-  const executions = useAsync(() => api.executions({ limit: 6 }), []);
-  const workflows = useAsync(() => api.workflows(), []);
+  const stats = useAsync(() => api.stats());
+  const executions = useAsync(() => api.executions({ limit: 6 }));
+  const workflows = useAsync(() => api.workflows());
 
   return (
     <>

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
-import { Braces, Check, Play, Rocket, Send, Webhook } from "lucide-react";
+import { Braces, Check, Rocket, Send, Webhook } from "lucide-react";
 import { api, ApiError } from "@/lib/api";
 import type { ActionType } from "@/lib/types";
 import { Button } from "@/components/ui/button";

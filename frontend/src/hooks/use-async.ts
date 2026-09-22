@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface AsyncState<T> {
   data: T | null;
@@ -10,20 +10,34 @@ interface AsyncState<T> {
   setData: (value: T) => void;
 }
 
-/** Minimal data fetching for the dashboard — no cache library needed here. */
-export function useAsync<T>(fn: () => Promise<T>, deps: unknown[] = []): AsyncState<T> {
+/**
+ * Minimal data fetching for the dashboard — no cache library needed here.
+ *
+ * The fetcher lives in a ref and the effect re-runs on `key`, a string that
+ * describes what is being fetched ("workflow:4", "executions:0:failed"). That
+ * keeps the dependency list a literal array, which React's lint rules require,
+ * and makes the refetch condition explicit at the call site.
+ *
+ * `loading` starts true and is only flipped from a promise callback or from
+ * `reload()`, so the effect never sets state synchronously.
+ */
+export function useAsync<T>(fn: () => Promise<T>, key: string = ""): AsyncState<T> {
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [nonce, setNonce] = useState(0);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const run = useCallback(fn, deps);
+  const fetcher = useRef(fn);
+
+  // Keep the ref pointing at the latest closure without writing during render.
+  useEffect(() => {
+    fetcher.current = fn;
+  });
 
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
-    run()
+    fetcher
+      .current()
       .then((value) => {
         if (cancelled) return;
         setData(value);
@@ -38,7 +52,12 @@ export function useAsync<T>(fn: () => Promise<T>, deps: unknown[] = []): AsyncSt
     return () => {
       cancelled = true;
     };
-  }, [run, nonce]);
+  }, [key, nonce]);
 
-  return { data, error, loading, reload: () => setNonce((n) => n + 1), setData };
+  const reload = () => {
+    setLoading(true);
+    setNonce((value) => value + 1);
+  };
+
+  return { data, error, loading, reload, setData };
 }

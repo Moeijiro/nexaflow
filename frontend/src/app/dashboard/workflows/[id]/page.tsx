@@ -24,8 +24,8 @@ export default function WorkflowDetailPage({ params }: { params: Promise<{ id: s
   const search = useSearchParams();
   const justCreated = search.get("created") === "1";
 
-  const workflow = useAsync(() => api.workflow(workflowId), [workflowId]);
-  const executions = useAsync(() => api.workflowExecutions(workflowId, 10), [workflowId]);
+  const workflow = useAsync(() => api.workflow(workflowId), `workflow:${workflowId}`);
+  const executions = useAsync(() => api.workflowExecutions(workflowId, 10), `workflow-runs:${workflowId}`);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
