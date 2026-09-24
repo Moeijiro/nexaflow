@@ -2,6 +2,8 @@
 
 # NexaFlow
 
+**Portfolio case study:** [moeijiro.github.io/portfolio/projects/nexaflow](https://moeijiro.github.io/portfolio/projects/nexaflow/) · **Live demo:** not hosted — the app runs locally in a few commands (see below).
+
 **Automate the work between your tools.**
 
 Connect your services, build automated workflows and let NexaFlow handle repetitive tasks in
