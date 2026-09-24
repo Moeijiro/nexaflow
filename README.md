@@ -366,6 +366,10 @@ Makefile          install / api / web / seed / test
 
 ---
 
+## Project status
+
+Complete portfolio project with three working integrations (Discord, Telegram, HTTP). CI runs the backend tests and the web build on every push. There is no hosted instance.
+
 ## Licence
 
 MIT — see [LICENSE](LICENSE). NexaFlow is a portfolio project, not a commercial service.
